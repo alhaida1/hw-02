@@ -19,18 +19,32 @@ class Observer():
         self.im2_filename = im2_filename
         self.load_images(im1_filename,im2_filename)
         
-    def load_images():
+    def load_images(im1_filename,im2_filename):
         '''
-        This function is incomplete! It is missing the appropriate input vales
-        and the "pass" should be replaced with the appropriate code.
-        Update this docstring to explain what the function does (or should do).
+        This function takes 2 images files names and loads them with fits
+        then return a dictionary of the file name and image array for each file
         '''
-        pass
+        
+        load_im1 = fits.getdata(im1_filename)
+        load_im2 = fits.getdata(im2_filename)
+        dictionary = {im1_filename: load_im1, im2_filename:load_im2}
+        return dictionary
+    
+    def calc_stats(diction):
+        for x in diction:
+            std = np.std(diction[x])
+            mean = np.mean(diction[x])
+            print('the standard dev is', std)
+            print('the mean is', mean)
+
     
     def make_composite(self):
+        
         '''
-        This function is incomplete! Make sure to finish it and
-        then update this docstring to explain what the function does!
+        This function takes in the following:
+        f1 : file name for the "R" filter image
+        f2 : file name for the "I" filter image
+        im_dict : a dictionary that contains the image arrays as entries that match the file names
         '''
         # Define the array for storing RGB values
         rgb = np.zeros((self.im1_data.shape[0],self.im1_data.shape[1],3))
@@ -41,3 +55,13 @@ class Observer():
         # Compute the red channel values and then clip them to ensure nothing is > 1.0
         rgb[:,:,0] = 1.5 * (self.im2_data.astype("float")/norm_factor)
         rgb[:,:,0][rgb[:,:,0] > 1.0] = 1.0
+        
+        rgb[:,:,1] = (im_dict[f2].astype("float")+ (im_dict[f1].astype('float')))/2 / norm_factor
+        rgb[:,:,1][rgb[:,:,1] > 1.0] = 1.0
+        
+        rgb[:,:,2] = (im_dict[f1].astype("float")/norm_factor)
+        rgb[:,:,1][rgb[:,:,1] > 1.0] = 1.0
+        
+        rgb[:,:,2][rgb[:,:,2] > 1.0] = 1.0
+        
+        return rgb
