@@ -19,7 +19,7 @@ class Observer():
         self.im2_filename = im2_filename
         self.load_images(im1_filename,im2_filename)
         
-    def load_images(im1_filename,im2_filename):
+    def load_images(self, im1_filename,im2_filename):
         '''
         This function takes 2 images files names and loads them with fits
         then return a dictionary of the file name and image array for each file
@@ -27,18 +27,18 @@ class Observer():
         
         load_im1 = fits.getdata(im1_filename)
         load_im2 = fits.getdata(im2_filename)
-        dictionary = {im1_filename: load_im1, im2_filename:load_im2}
-        return dictionary
+        im_dict = {im1_filename: load_im1, im2_filename:load_im2}
+        self.im_dict = im_dict
     
-    def calc_stats(diction):
-        for x in diction:
-            std = np.std(diction[x])
-            mean = np.mean(diction[x])
+    def calc_stats(self):
+        for x in self.im_dict:
+            std = np.std(self.im_dict[x])
+            mean = np.mean(self.im_dict[x])
             print('the standard dev is', std)
             print('the mean is', mean)
 
     
-    def make_composite(self):
+    def make_composite(self, f1,f2, im_dict):
         
         '''
         This function takes in the following:
